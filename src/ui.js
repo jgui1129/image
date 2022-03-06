@@ -26,6 +26,12 @@ export default class Ui {
       caption: make('div', [this.CSS.input, this.CSS.caption], {
         contentEditable: true,
       }),
+      alt: make('div', [this.CSS.input, this.CSS.alt], {
+        contentEditable: true,
+      }),
+      title: make('div', [this.CSS.input, this.CSS.caption], {
+        contentEditable: true,
+      }),
     };
 
     /**
@@ -39,9 +45,13 @@ export default class Ui {
      *  </wrapper>
      */
     this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder;
+    this.nodes.title.dataset.placeholder = this.config.titlePlaceholder;
+    this.nodes.alt.dataset.placeholder = this.config.altPlaceholder;
     this.nodes.imageContainer.appendChild(this.nodes.imagePreloader);
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.caption);
+    this.nodes.wrapper.appendChild(this.nodes.title);
+    this.nodes.wrapper.appendChild(this.nodes.alt);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
   }
 
@@ -64,9 +74,11 @@ export default class Ui {
       imageContainer: 'image-tool__image',
       imagePreloader: 'image-tool__image-preloader',
       imageEl: 'image-tool__image-picture',
+      alt: 'image-tool__alt',
       caption: 'image-tool__caption',
+      title: 'image-tool__alt',
     };
-  };
+  }
 
   /**
    * Ui statuses:
@@ -108,7 +120,9 @@ export default class Ui {
   createFileButton() {
     const button = make('div', [ this.CSS.button ]);
 
-    button.innerHTML = this.config.buttonContent || `${buttonIcon} ${this.api.i18n.t('Select an Image')}`;
+    button.innerHTML =
+      this.config.buttonContent ||
+      `${buttonIcon} ${this.api.i18n.t('Select an Image')}`;
 
     button.addEventListener('click', () => {
       this.onSelectFile();
@@ -222,6 +236,34 @@ export default class Ui {
     }
   }
 
+  fillTitle/**
+            *
+            *//**
+               *
+               *//**
+                  *
+                  *//**
+                     *
+                     */(text) {
+    if (this.nodes.title) {
+      this.nodes.title.innerHTML = text;
+    }
+  }
+
+  fillAlt/**
+          *
+          *//**
+             *
+             *//**
+                *
+                *//**
+                   *
+                   */(text) {
+    if (this.nodes.alt) {
+      this.nodes.alt.innerHTML = text;
+    }
+  }
+
   /**
    * Changes UI status
    *
@@ -231,7 +273,10 @@ export default class Ui {
   toggleStatus(status) {
     for (const statusType in Ui.status) {
       if (Object.prototype.hasOwnProperty.call(Ui.status, statusType)) {
-        this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${Ui.status[statusType]}`, status === Ui.status[statusType]);
+        this.nodes.wrapper.classList.toggle(
+          `${this.CSS.wrapper}--${Ui.status[statusType]}`,
+          status === Ui.status[statusType]
+        );
       }
     }
   }
@@ -244,7 +289,10 @@ export default class Ui {
    * @returns {void}
    */
   applyTune(tuneName, status) {
-    this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
+    this.nodes.wrapper.classList.toggle(
+      `${this.CSS.wrapper}--${tuneName}`,
+      status
+    );
   }
 }
 

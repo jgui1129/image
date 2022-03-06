@@ -108,6 +108,8 @@ export default class ImageTool {
       field: config.field || 'image',
       types: config.types || 'image/*',
       captionPlaceholder: this.api.i18n.t(config.captionPlaceholder || 'Caption'),
+      altPlaceholder: config.altPlaceholder || 'Alt',
+      titlePlaceholder: config.titlePlaceholder || 'title',
       buttonContent: config.buttonContent || '',
       uploader: config.uploader || undefined,
     };
@@ -171,8 +173,12 @@ export default class ImageTool {
    */
   save() {
     const caption = this.ui.nodes.caption;
+    const alt = this.ui.nodes.alt;
+    const title = this.ui.nodes.title;
 
     this._data.caption = caption.innerHTML;
+    this._data.alt = alt.innerHTML;
+    this._data.title = title.innerHTML;
 
     return this.data;
   }
@@ -215,7 +221,7 @@ export default class ImageTool {
        * Paste URL of image into the Editor
        */
       patterns: {
-        image: /https?:\/\/\S+\.(gif|jpe?g|tiff|png)$/i,
+        image: /(http)?s?:?(\/\/[^"']*.googleusercontent.com([^"]*))|(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg|heic|webp|PNG|JPG|JPEG|GIF|PNG|SVG|HEIC|WEBP))$/i,
       },
 
       /**
@@ -284,7 +290,11 @@ export default class ImageTool {
     this.image = data.file;
 
     this._data.caption = data.caption || '';
+    this._data.title = data.title || '';
+    this._data.alt = data.alt || '';
     this.ui.fillCaption(this._data.caption);
+    this.ui.fillAlt(this._data.alt);
+    this.ui.fillTitle(this._data.title);
 
     Tunes.tunes.forEach(({ name: tune }) => {
       const value = typeof data[tune] !== 'undefined' ? data[tune] === true || data[tune] === 'true' : false;
