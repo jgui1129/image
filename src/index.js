@@ -76,6 +76,15 @@ import Uploader from './uploader';
  */
 export default class ImageTool {
   /**
+   * Notify core that read-only mode is supported
+   *
+   * @returns {boolean}
+   */
+  static get isReadOnlySupported() {
+    return true;
+  }
+
+  /**
    * Get Tool toolbox settings
    * icon - Tool icon's SVG
    * title - title to show in toolbox
@@ -94,9 +103,11 @@ export default class ImageTool {
    * @param {ImageToolData} tool.data - previously saved data
    * @param {ImageConfig} tool.config - user config for Tool
    * @param {object} tool.api - Editor.js API
+   * @param {boolean} tool.readOnly - read-only mode flag
    */
-  constructor({ data, config, api }) {
+  constructor({ data, config, api, readOnly }) {
     this.api = api;
+    this.readOnly = readOnly;
 
     /**
      * Tool's initial config
@@ -112,6 +123,7 @@ export default class ImageTool {
       titlePlaceholder: config.titlePlaceholder || 'title',
       buttonContent: config.buttonContent || '',
       uploader: config.uploader || undefined,
+      actions: config.actions || [],
     };
 
     /**
@@ -136,6 +148,7 @@ export default class ImageTool {
           },
         });
       },
+      readOnly,
     });
 
     /**
@@ -143,6 +156,7 @@ export default class ImageTool {
      */
     this.tunes = new Tunes({
       api,
+      actions: this.config.actions,
       onChange: (tuneName) => this.tuneToggled(tuneName),
     });
 
@@ -162,6 +176,17 @@ export default class ImageTool {
    */
   render() {
     return this.ui.render(this.data);
+  }
+
+  /**
+   * Validate data: check if Image exists
+   *
+   * @param {ImageToolData} savedData — data received after saving
+   * @returns {boolean} false if saved data is not correct, otherwise true
+   * @public
+   */
+  validate(savedData) {
+    return savedData.file && savedData.file.url;
   }
 
   /**
